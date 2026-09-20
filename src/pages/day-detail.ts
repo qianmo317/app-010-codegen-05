@@ -1,7 +1,8 @@
 import { router } from '../router';
 import { createElement, clearElement } from '../utils/dom';
 import { getDayInfo } from '../almanac/lunar';
-import { getDayYiJi, getShiChenInfo } from '../almanac/yiji';
+import { getDayYiJi } from '../almanac/yiji';
+import { getDayHours } from '../almanac/hourly';
 import { getFarmTipByDate } from '../almanac/farm';
 import { WEEK_DAYS, PENG_ZU_TIAN, PENG_ZU_DI, XIU } from '../almanac/constants';
 import { gregorianToJDN } from '../utils/date';
@@ -72,14 +73,15 @@ export function renderDayDetail(app: HTMLElement, dateStr: string) {
     <div class="pengzu-item">${PENG_ZU_DI[zhiIndex] || ''}</div>
   `;
 
-  // 时辰吉凶
+  // 时辰吉凶（早晚子时分开，共13行）
   const hourCard = createElement('div', 'card hour-card');
-  const shiChen = getShiChenInfo(lunar.dayGanZhi);
+  const dayHours = getDayHours(year, month, day);
   const hourTable = createElement('div', 'hour-table');
-  shiChen.forEach(h => {
+  dayHours.hours.forEach(h => {
     const row = createElement('div', `hour-row ${h.luck}`);
+    const badge = h.belongsToNextDay ? '<span class="next-day-badge">次日</span>' : '';
     row.innerHTML = `
-      <span class="hour-name">${h.name}</span>
+      <span class="hour-name">${h.name}${badge}</span>
       <span class="hour-range">${h.range}</span>
       <span class="hour-ganzhi">${h.ganZhi}</span>
       <span class="hour-luck">${h.luck}</span>
@@ -88,6 +90,10 @@ export function renderDayDetail(app: HTMLElement, dateStr: string) {
   });
   hourCard.innerHTML = '<h3>时辰吉凶</h3>';
   hourCard.appendChild(hourTable);
+  const hoursLink = createElement('a', 'hours-link', '查看时辰吉凶详表（宜忌·冲煞·打印） ▶') as HTMLAnchorElement;
+  hoursLink.href = `/hours/${dateStr}`;
+  hoursLink.addEventListener('click', (e) => { e.preventDefault(); router.navigate(`/hours/${dateStr}`); });
+  hourCard.appendChild(hoursLink);
 
   // 农事提示
   const farmCard = createElement('div', 'card farm-card');

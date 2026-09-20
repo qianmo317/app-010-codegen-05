@@ -1,4 +1,4 @@
-import { TIAN_GAN, DI_ZHI } from './constants';
+import { DI_ZHI, CHONG_SHA } from './constants';
 import { getDayGanZhi, solarToLunar } from './lunar';
 import { gregorianToJDN } from '../utils/date';
 
@@ -106,21 +106,7 @@ export const EVENT_WEIGHTS: Record<string, { yi: number; ji: number }> = {
   '祭祀': { yi: 6, ji: -6 }
 };
 
-// 冲煞表
-const CHONG_SHA: Record<string, { chong: string; sha: string }> = {
-  '子': { chong: '午', sha: '南' },
-  '丑': { chong: '未', sha: '东' },
-  '寅': { chong: '申', sha: '北' },
-  '卯': { chong: '酉', sha: '西' },
-  '辰': { chong: '戌', sha: '南' },
-  '巳': { chong: '亥', sha: '东' },
-  '午': { chong: '子', sha: '北' },
-  '未': { chong: '丑', sha: '西' },
-  '申': { chong: '寅', sha: '南' },
-  '酉': { chong: '卯', sha: '东' },
-  '戌': { chong: '辰', sha: '北' },
-  '亥': { chong: '巳', sha: '西' }
-};
+// 冲煞表已移至 constants.ts 统一维护
 
 export interface DayYiJi {
   yi: string[];
@@ -224,42 +210,4 @@ export function scoreDay(year: number, month: number, day: number, events: strin
   }
 
   return Math.max(0, Math.min(100, score));
-}
-
-// 获取时辰吉凶
-export function getShiChenInfo(dayGanZhi: string): Array<{ name: string; range: string; ganZhi: string; luck: '吉' | '凶' | '平' }> {
-  const hours = [
-    { name: '子时', range: '23:00-01:00', start: 23 },
-    { name: '丑时', range: '01:00-03:00', start: 1 },
-    { name: '寅时', range: '03:00-05:00', start: 3 },
-    { name: '卯时', range: '05:00-07:00', start: 5 },
-    { name: '辰时', range: '07:00-09:00', start: 7 },
-    { name: '巳时', range: '09:00-11:00', start: 9 },
-    { name: '午时', range: '11:00-13:00', start: 11 },
-    { name: '未时', range: '13:00-15:00', start: 13 },
-    { name: '申时', range: '15:00-17:00', start: 15 },
-    { name: '酉时', range: '17:00-19:00', start: 17 },
-    { name: '戌时', range: '19:00-21:00', start: 19 },
-    { name: '亥时', range: '21:00-23:00', start: 21 },
-  ];
-
-  const dayGan = dayGanZhi[0];
-  const dayGanIndex = TIAN_GAN.indexOf(dayGan);
-  const hourGanStart = (dayGanIndex % 5) * 2;
-
-  // 吉时判定（简化版）
-  const luckCycle = dayGanIndex % 2 === 0
-    ? ['吉', '凶', '吉', '凶', '平', '吉', '凶', '吉', '凶', '平', '吉', '凶']
-    : ['凶', '吉', '凶', '吉', '平', '凶', '吉', '凶', '吉', '平', '凶', '吉'];
-
-  return hours.map((h, i) => {
-    const hourGanIndex = (hourGanStart + i) % 10;
-    const hourZhiIndex = i;
-    return {
-      name: h.name,
-      range: h.range,
-      ganZhi: TIAN_GAN[hourGanIndex] + DI_ZHI[hourZhiIndex],
-      luck: luckCycle[i] as '吉' | '凶' | '平'
-    };
-  });
 }

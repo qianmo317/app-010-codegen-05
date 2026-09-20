@@ -38,6 +38,21 @@ export const LUNAR_DAY_NAMES = [
 ];
 // 方位
 export const DIRECTIONS = ['东', '南', '西', '北'];
+// 地支相冲与煞方（chong：相冲的地支；sha：煞所在方位）
+export const CHONG_SHA: Record<string, { chong: string; sha: string }> = {
+  '子': { chong: '午', sha: '南' },
+  '丑': { chong: '未', sha: '东' },
+  '寅': { chong: '申', sha: '北' },
+  '卯': { chong: '酉', sha: '西' },
+  '辰': { chong: '戌', sha: '南' },
+  '巳': { chong: '亥', sha: '东' },
+  '午': { chong: '子', sha: '北' },
+  '未': { chong: '丑', sha: '西' },
+  '申': { chong: '寅', sha: '南' },
+  '酉': { chong: '卯', sha: '东' },
+  '戌': { chong: '辰', sha: '北' },
+  '亥': { chong: '巳', sha: '西' }
+};
 // 值日星神（简化版，按日柱循环）
 export const ZHI_SHEN = [
   '青龙', '明堂', '天刑', '朱雀', '金匮', '天德', '白虎', '玉堂', '天牢', '玄武', '司命', '勾陈'

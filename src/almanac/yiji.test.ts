@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { getDayYiJi, scoreDay, getShiChenInfo } from './yiji';
+import { getDayYiJi, scoreDay } from './yiji';
 
 describe('宜忌计算', () => {
   it('应返回宜忌信息', () => {
@@ -31,17 +31,5 @@ describe('择日评分', () => {
     const score2 = scoreDay(2024, 6, 15, ['嫁娶'], ['鼠']);
     // 如果当天冲鼠，分数应该更低
     expect(score2).toBeLessThanOrEqual(score1);
-  });
-});
-
-describe('时辰吉凶', () => {
-  it('应返回12个时辰', () => {
-    const hours = getShiChenInfo('甲子');
-    expect(hours).toHaveLength(12);
-    hours.forEach(h => {
-      expect(['吉', '凶', '平']).toContain(h.luck);
-      expect(h.name).toBeTruthy();
-      expect(h.ganZhi).toBeTruthy();
-    });
   });
 });

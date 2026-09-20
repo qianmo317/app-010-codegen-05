@@ -1,6 +1,7 @@
 import { router } from './router';
 import { renderCalendar } from './pages/calendar';
 import { renderDayDetail } from './pages/day-detail';
+import { renderHours } from './pages/hours';
 import { renderPick } from './pages/pick';
 import { renderFarm } from './pages/farm';
 
@@ -20,6 +21,13 @@ export function initApp() {
       case '/day':
         if (route.params?.date) {
           renderDayDetail(app, route.params.date);
+        } else {
+          renderCalendar(app);
+        }
+        break;
+      case '/hours':
+        if (route.params?.date) {
+          renderHours(app, route.params.date);
         } else {
           renderCalendar(app);
         }
@@ -609,6 +617,186 @@ function injectStyles() {
 
     .pengzu-item:last-child {
       border-bottom: none;
+    }
+
+    /* 时辰吉凶表 */
+    .date-nav {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .date-nav input[type="date"] {
+      padding: 6px 10px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 14px;
+      flex: 1;
+    }
+
+    .hours-day-info {
+      text-align: center;
+      color: var(--text-light);
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+
+    .hours-day-info strong {
+      display: block;
+      font-size: 18px;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+
+    .hours-summary {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .summary-box {
+      flex: 1;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .summary-box.best {
+      background: #e8f5e9;
+      border: 1px solid var(--secondary);
+      color: var(--secondary);
+    }
+
+    .summary-box.worst {
+      background: #ffebee;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+    }
+
+    .summary-box .summary-title {
+      font-weight: bold;
+      margin-right: 8px;
+    }
+
+    .zi-note {
+      font-size: 12px;
+      color: var(--text-light);
+      background: #fff8e1;
+      border: 1px dashed #d7b56d;
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin-bottom: 12px;
+    }
+
+    .hours-link {
+      display: block;
+      margin-top: 10px;
+      color: var(--primary);
+      font-size: 13px;
+      text-decoration: none;
+    }
+
+    .hours-link:hover { text-decoration: underline; }
+
+    .hours-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .hours-table th, .hours-table td {
+      border: 1px solid var(--border);
+      padding: 6px 8px;
+      text-align: center;
+    }
+
+    .hours-table th {
+      background: var(--primary);
+      color: #fff;
+      font-weight: normal;
+      white-space: nowrap;
+    }
+
+    .hours-table td.cell-yi, .hours-table td.cell-ji {
+      text-align: left;
+      font-size: 12px;
+    }
+
+    .hours-table td.cell-yi { color: var(--secondary); }
+    .hours-table td.cell-ji { color: var(--accent); }
+
+    .hours-table tr.luck-吉 { background: #f4faf4; }
+    .hours-table tr.luck-凶 { background: #fdf4f4; }
+
+    .hours-table td.cell-luck { font-weight: bold; }
+    .hours-table tr.luck-吉 td.cell-luck { color: var(--secondary); }
+    .hours-table tr.luck-凶 td.cell-luck { color: var(--accent); }
+
+    .hours-table tr.next-day-row td {
+      border-top: 2px dashed var(--primary-light);
+    }
+
+    .next-day-badge {
+      display: inline-block;
+      font-size: 10px;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 3px;
+      padding: 0 4px;
+      margin-left: 4px;
+      vertical-align: middle;
+    }
+
+    .merge-group {
+      padding: 8px 0;
+      border-bottom: 1px dashed var(--border);
+    }
+
+    .merge-group:last-child { border-bottom: none; }
+
+    .merge-hours {
+      font-size: 13px;
+      color: var(--primary);
+      margin-bottom: 4px;
+      font-weight: bold;
+    }
+
+    .merge-yiji {
+      font-size: 13px;
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .merge-yiji .yi-text { color: var(--secondary); }
+    .merge-yiji .ji-text { color: var(--accent); }
+
+    .merge-empty {
+      color: var(--text-light);
+      font-size: 13px;
+    }
+
+    /* 打印：一页放下整张时辰表 */
+    @media print {
+      @page { size: A4; margin: 10mm; }
+      body { background: #fff; }
+      .no-print { display: none !important; }
+      .page { max-width: none; padding: 0; }
+      .card { box-shadow: none; border: none; padding: 8px 0; margin-bottom: 8px; }
+      .card h3 { font-size: 14px; margin-bottom: 8px; }
+      .hours-day-info { font-size: 12px; margin-bottom: 8px; }
+      .hours-day-info strong { font-size: 16px; }
+      .hours-summary { margin-bottom: 8px; }
+      .summary-box { padding: 6px 10px; font-size: 12px; }
+      .zi-note { font-size: 11px; padding: 6px 10px; margin-bottom: 8px; }
+      .hours-table { font-size: 11px; }
+      .hours-table th, .hours-table td { padding: 3px 5px; }
+      .hours-table td.cell-yi, .hours-table td.cell-ji { font-size: 10px; }
+      .merge-group { padding: 4px 0; }
+      .merge-hours, .merge-yiji { font-size: 11px; }
+      * { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
     }
 
     /* 响应式 */

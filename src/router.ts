@@ -41,6 +41,11 @@ class Router {
     if (dayMatch) {
       return { path: '/day', params: { date: dayMatch[1] } };
     }
+    // 解析 /hours/:date 格式
+    const hoursMatch = path.match(/^\/hours\/(\d{4}-\d{2}-\d{2})$/);
+    if (hoursMatch) {
+      return { path: '/hours', params: { date: hoursMatch[1] } };
+    }
     if (path === '/pick') return { path: '/pick' };
     if (path === '/farm') return { path: '/farm' };
     return { path: '/' };
