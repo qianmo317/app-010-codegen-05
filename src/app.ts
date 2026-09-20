@@ -3,6 +3,7 @@ import { renderCalendar } from './pages/calendar';
 import { renderDayDetail } from './pages/day-detail';
 import { renderPick } from './pages/pick';
 import { renderFarm } from './pages/farm';
+import { renderShichen } from './pages/shichen';
 
 export function initApp() {
   const app = document.getElementById('app');
@@ -29,6 +30,9 @@ export function initApp() {
         break;
       case '/farm':
         renderFarm(app);
+        break;
+      case '/shichen':
+        renderShichen(app, route.params?.date);
         break;
       default:
         renderCalendar(app);

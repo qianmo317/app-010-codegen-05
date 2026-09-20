@@ -41,6 +41,10 @@ class Router {
     if (dayMatch) {
       return { path: '/day', params: { date: dayMatch[1] } };
     }
+    const shichenMatch = path.match(/^\/shichen(?:\/(\d{4}-\d{2}-\d{2}))?$/);
+    if (shichenMatch) {
+      return { path: '/shichen', params: shichenMatch[1] ? { date: shichenMatch[1] } : undefined };
+    }
     if (path === '/pick') return { path: '/pick' };
     if (path === '/farm') return { path: '/farm' };
     return { path: '/' };

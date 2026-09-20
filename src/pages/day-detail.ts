@@ -89,6 +89,20 @@ export function renderDayDetail(app: HTMLElement, dateStr: string) {
   hourCard.innerHTML = '<h3>时辰吉凶</h3>';
   hourCard.appendChild(hourTable);
 
+  // 完整版时辰吉凶通胜（早晚子时拆分、神煞宜忌冲煞、打印）
+  const shichenLink = document.createElement('a');
+  shichenLink.className = 'nav-btn sc-entry-btn';
+  shichenLink.href = `/shichen/${dateStr}`;
+  shichenLink.textContent = '查看时辰吉凶通胜（早晚子时 / 宜忌冲煞 / 打印）▶';
+  shichenLink.style.display = 'inline-block';
+  shichenLink.style.marginTop = '10px';
+  shichenLink.style.textDecoration = 'none';
+  shichenLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    router.navigate(`/shichen/${dateStr}`);
+  });
+  hourCard.appendChild(shichenLink);
+
   // 农事提示
   const farmCard = createElement('div', 'card farm-card');
   const farmTip = getFarmTipByDate(year, month, day, lunar.solarTerm);
